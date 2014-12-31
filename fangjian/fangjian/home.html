@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>坊间，让您与专业人士一起完成个人目标</title>
+		
+		<!-- YUI css https://github.com/yui/yui3/wiki/Quick-Start -->		
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
+
+    <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+		<link rel="stylesheet" href="styles/home.css">
+		
+	</head>
+	
+<body>
+
+    <div id="layout">
+		<div id="header">
+			<img src="resources/pictures/logo.png"/>
+			<h1 id="slogan">
+				与专业人士一起完成个人项目
+			</h1>
+			<div id="volumeControl"  class="yui3-skin-round">
+				<span>坊间故事</span>
+				<span class="volumeSlider"></span>
+				
+			</div>		
+		</div>
+		<div id="categories" class="block">
+			<h1 class="intro" id="categoryIntro"> 在坊间，随时都有一群热情优秀的专业人士，帮助您达成您的各种目标</h1>
+			<div class="yui3-g" id="categoryPicRow1">
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+			<div class="yui3-g" id="categoryPicRow2">
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+		</div>
+		
+		<div id="steps" class="block">
+			<h1 class="intro" id="stepIntro"> 高效智能地为您搜索最合适的专业人士，开启愉快、安全的合作之旅</h1>
+			<hr>
+			<h2 class="intro"> 具体流程 </h2>
+			<div class="yui3-g" id="stepRow">
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+		</div>
+		
+		<div id="pros" class="block">
+			<h1 class="intro" id="prosIntro"> 我驻扎在坊间</h1>
+			<hr>
+			<h2 class="intro"> 坊间为专业人士提供了一个公平、有效的拓展事业的平台 </h2>
+			<div class="yui3-g" id="prosRow">
+				<div class="yui3-u-2-3">
+					<img src="resources/pictures/pPicPlaceHolderBig.png"/ >
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+					<p>如果您是一位有理想的专业人士，请带着您的热情和执着</p>
+					<button>加入我们</button>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div id="more" class="block">
+			<h1 class="intro" id="moreIntro"> 探索更多</h1>
+			<div class="yui3-g" id="moreRow">
+				<div class="yui3-u-1-2">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-2">
+					<img src="resources/pictures/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+		</div>
+		
+
+		
+    </div>
+	<div id="footer">
+		<div class="yui3-g">
+			<div class="yui3-u-1-2">
+				<h2>关于我们</h2>
+				<p>BLABLABLABLABLABLABLABLABLABLABLABLABLABLABLABLAB</P>
+			</div>
+			<div class="yui3-u-1-2">
+				<form id="contactUs">
+					<div class="yui3-g">
+						<div class="yui3-u-1-2">
+							姓名：<input type="text" name="name">
+						</div>
+						<div class="yui3-u-1-2">
+							邮箱：<input type="email" name="email">
+						</div>
+					</div>
+					<div>
+						<textarea name="message" rows="10" cols="60">
+						
+						</textarea>
+					</div>
+					<input type="submit" value="提交" name="submit">
+				<form>
+			</div>
+		</div>
+		
+	</div>	
+	<div id="toolbar">
+		登陆|注册|帮助中心
+	</div>
+
+</body>
+<script>
+
+YUI({
+    skin: {
+        overrides: {
+            "slider-base": [ "round" ]
+        }
+    }
+}).use("slider", function (Y) {
+	var xSlider;
+	
+	xSlider = new Y.Slider();
+	xSlider.setAttrs("thumbUrl", "resources/pictures/volumeControl.png");
+	xSlider.render('.volumeSlider');
+	
+
+	
+});
+
+</script>
+
+</html>

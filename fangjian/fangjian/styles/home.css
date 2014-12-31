@@ -1,0 +1,49 @@
+
+    #layout {
+        margin: auto; /* center in viewport */
+        width: 800px;
+		border:1px solid #ccc
+    }
+	
+	.block {
+		margin:50px;
+		
+	}
+	
+	#header {
+		height:500px;
+		position:relative;
+	}
+	
+	#footer {
+		height:500px;
+		width:100%;
+		text-align:center;
+	}
+	
+	#slogan {
+		position:relative;
+		vertical-align:middle;
+	}
+	
+	#volumeControl{
+		vertical-align:bottom;
+		position:absolute;
+		bottom:0;
+	}
+	
+	#toolbar {
+		text-align:right;
+		right:20px;
+		top: 20px;
+		position:fixed;
+	}
+
+	
+	
+	@media(max-width: 800px) {
+	#layout {
+		width:100%;
+		border:1px solid #ccc
+	}
+	}

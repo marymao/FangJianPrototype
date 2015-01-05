@@ -4,6 +4,52 @@
         width: 800px;
 		border:1px solid #ccc
     }
+
+#mask {
+    display: none;
+    background: #000;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    z-index: 999;
+}
+
+
+/* You can customize to your needs  */
+.loginPopup {
+    display: none;
+    padding: 10px;
+    border: 2px solid #ddd;
+    float: left;
+    font-size: 1.2em;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 99999;
+    box-shadow: 0px 0px 20px #999;
+    /* CSS3 */
+    -moz-box-shadow: 0px 0px 20px #999;
+    /* Firefox */
+    -webkit-box-shadow: 0px 0px 20px #999;
+    /* Safari, Chrome */
+    border-radius: 3px 3px 3px 3px;
+    -moz-border-radius: 3px;
+    /* Firefox */
+    -webkit-border-radius: 3px;
+    /* Safari, Chrome */;
+}
+
+#requestBox {
+    width:400px;
+    position:fixed;
+    right:100px;
+    top:400px;
+    border:2px solid #ccc
+}
 	
 	.block {
 		margin:50px;
@@ -34,16 +80,49 @@
 	
 	#toolbar {
 		text-align:right;
-		right:20px;
-		top: 20px;
-		position:fixed;
+		right:10px;
+		top: 10px;
+		position:relative;
 	}
 
-	
+
+.icon {
+    display: block;
+    width: 40px;
+    height: 40px;
+    float: left;
+    opacity: 1;
+    transition: opacity 0.4s;
+    -moz-transition: opacity 0.4s;
+    -webkit-transition: opacity 0.4s;
+    -o-transition: opacity 0.4s;
+}
+.icon:hover {
+    opacity: 0;
+}
+
+.social {
+    float: left;
+    background: url(../images/social-icons.png);
+}
+
+
+.wc {
+    background: url(../images/facebook.png);
+}
+.wb {
+    background: url(../images/twitter.png);
+}
+.db {
+    background: url(../images/rss.png);
+}
+.bl {
+    background: url(../images/mail.png);
+}
 	
 	@media(max-width: 800px) {
-	#layout {
-		width:100%;
-		border:1px solid #ccc
-	}
+        #layout {
+            width:100%;
+            border:1px solid #ccc
+        }
 	}

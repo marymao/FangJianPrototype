@@ -8,24 +8,68 @@
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
 
     <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 		<link rel="stylesheet" href="css/home.css">
 		
 	</head>
 	
 <body>
+    
+    <div id="header">
+        <div id="toolbar">
+            <a href="#loginBox" class="loginWindow">登陆</a>|注册|帮助中心
+            
+            <div id="loginBox" class="loginPopup">
+                <a href="#" class="close">关闭</a>
+                <form id="signin" action="#">
+                    <fieldset class="textbox">
+                        <label class="username">
+                            <span>Username or email</span>
+                            <input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">
+                                </label>
+                        <label class="password">
+                            <span>Password</span>
+                            <input id="password" name="password" value="" type="password" placeholder="Password">
+                                </label>
+                        <button class="submit button" type="button">Sign in</button>
+                        <p>
+                        <a class="forgot" href="#">Forgot your password?</a>
+                        </p>        
+                    </fieldset>
+                </form>
+            </div>
+            
+        </div>
+        <img src="images/logo.png"/>
+
+        <h1 id="slogan">
+            与专业人士一起完成个人项目
+        </h1>
+        <div id="volumeControl"  class="yui3-skin-round">
+            <span>坊间故事</span>
+            <span class="volumeSlider"></span>
+            
+        </div>		
+    </div>
+    
+    <!--TODO: slide request effect-->
+    <div id="requestBox">
+        <h2>告诉我们：</h2>
+        <form id="requestFrom">
+            <span>我想要</span>
+            <input type="text" name="requestType"/>，我在
+            <select>
+                <option value="sz">深圳</option>
+                <option value="bj">北京</option>
+                <option value="sh">上海</option>
+            </select>
+            <br>
+            <input type="submit" value="确认">
+        </form>
+    </div>
 
     <div id="layout">
-		<div id="header">
-			<img src="images/logo.png"/>
-			<h1 id="slogan">
-				与专业人士一起完成个人项目
-			</h1>
-			<div id="volumeControl"  class="yui3-skin-round">
-				<span>坊间故事</span>
-				<span class="volumeSlider"></span>
-				
-			</div>		
-		</div>
+
 		<div id="categories" class="block">
 			<h1 class="intro" id="categoryIntro"> 在坊间，随时都有一群热情优秀的专业人士，帮助您达成您的各种目标</h1>
 			<div class="yui3-g" id="categoryPicRow1">
@@ -89,6 +133,7 @@
 		
 		<div id="more" class="block">
 			<h1 class="intro" id="moreIntro"> 探索更多</h1>
+            <hr>
 			<div class="yui3-g" id="moreRow">
 				<div class="yui3-u-1-2">
 					<img src="images/catPicPlaceHolder.png"/>
@@ -127,11 +172,29 @@
 				<form>
 			</div>
 		</div>
+        <div class="yui3-g">
+            <div class="yui3-u-1-3">
+                <div class="social">
+                    <a href="" target="_blank" class="icon wc"></a>
+                    <a href="" target="_blank" class="icon wb"></a>
+                    <a href="" target="_blank" class="icon db"></a>
+                    <a href="" target="_blank" class="icon bl"></a>
+                </div>
+            </div>
+            <div class="yui3-u-1-3">
+                坊间团队|联系我们|隐私条例|帮助中心
+            </div>
+            <div class="yui3-u-1-3">
+                <div class="mobile">
+                    <!--这里如果想做成和Social一样的效果，只要做出有颜色的背景图和灰度的按钮图即可-->
+                    <button>Android</button>
+                    <button>iOS</button>
+                </div>
+            </div>
+                
+        </div>
 		
 	</div>	
-	<div id="toolbar">
-		登陆|注册|帮助中心
-	</div>
 
 </body>
 <script>
@@ -152,6 +215,31 @@ YUI({
 
 	
 });
+
+
+//log in functionality
+$(document).ready(function() {
+                  $('a.loginWindow').click(function() {
+                                           var loginBox=$(this).attr('href');
+                                           $(loginBox).fadeIn(300);
+                                           var popMargTop=($(loginBox).height()+24)/2;
+                                           var popMargLeft=($(loginBox).height()+24)/2;
+                                           $(loginBox).css({
+                                                           'margin-top' : -popMargTop,
+                                                           'margin-left' : -popMargLeft
+                                                           });
+                                           $('body').append('<div id="mask"></div>');
+                                           $('mask').fadeIn(300);
+                                           
+                                           return false;
+                                           });
+                  $('a.close, #mask').live('click', function(){
+                                           $('#mask, .loginPopup').fadeOut(300, function(){
+                                                                           $('#mask').remove();
+                                                                           });
+                                           return false;
+                                           });
+                  });
 
 </script>
 

@@ -24,16 +24,17 @@
                 <form id="signin" action="#">
                     <fieldset class="textbox">
                         <label class="username">
-                            <span>Username or email</span>
+                            <span>电子邮箱</span>
                             <input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">
                                 </label>
+                        <br>
                         <label class="password">
-                            <span>Password</span>
+                            <span>密码</span>
                             <input id="password" name="password" value="" type="password" placeholder="Password">
                                 </label>
                         <button class="submit button" type="button">Sign in</button>
                         <p>
-                        <a class="forgot" href="#">Forgot your password?</a>
+                        <a class="forgot" href="#">忘记密码</a>
                         </p>        
                     </fieldset>
                 </form>
@@ -229,7 +230,7 @@ $(document).ready(function() {
                                                            'margin-left' : -popMargLeft
                                                            });
                                            $('body').append('<div id="mask"></div>');
-                                           $('mask').fadeIn(300);
+                                           $('#mask').fadeIn(300);
                                            
                                            return false;
                                            });

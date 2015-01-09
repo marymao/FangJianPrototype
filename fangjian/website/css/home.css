@@ -73,6 +73,7 @@
 	#slogan {
 		position:relative;
 		vertical-align:middle;
+        text-align:center;
 	}
 	
 	#volumeControl{
@@ -121,6 +122,23 @@
 }
 .bl {
     background: url(../images/mail.png);
+}
+
+
+
+/* registerAsSeeker */
+#description{
+    padding-bottom:50px;
+}
+
+.centerText {
+    text-align:center;
+}
+
+#registerGuide {
+    padding-left:100px;
+    padding-right:100px;
+    padding-top:50px;
 }
 	
 	@media(max-width: 800px) {

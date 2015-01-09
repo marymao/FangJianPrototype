@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>坊间，让您与专业人士一起完成个人目标</title>
+		
+		<!-- YUI css https://github.com/yui/yui3/wiki/Quick-Start -->		
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
+
+    <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="script/jquery-1.11.2.min.js"></script>
+		<link rel="stylesheet" href="css/home.css">
+		
+	</head>
+	
+<body>
+    
+    <div id="layout">
+
+
+        <img src="images/logo.png"/>
+
+        <h1> 加入坊间  </h1>
+        
+        <div class="yui3-g block">
+            <div class="yui3-u-1-2">
+                <h3>寻找专业人士与我一起完成目标</h3>
+                <button onclick="location.href='registerAsSeeker.html'">注册seeker</button>
+            </div>
+            <div class="yui3-u-1-2">
+                <h3>加入坊间马上获得新的客户</h3>
+                <button>注册provider</button>
+            </div>
+        </div>
+        
+        <div><span>已经注册了？
+            <a href="#loginBox" class="loginWindow">登陆</a></span>
+            <div id="loginBox" class="loginPopup">
+                <a href="#" class="close">关闭</a>
+                <form id="signin" action="#">
+                    <fieldset class="textbox">
+                        <label class="username">
+                            <span>电子邮箱</span>
+                            <input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">
+                                </label>
+                        <br>
+                        <label class="password">
+                            <span>密码</span>
+                            <input id="password" name="password" value="" type="password" placeholder="Password">
+                                </label>
+                        <button class="submit button" type="button">Sign in</button>
+                        <p>
+                        <a class="forgot" href="#">忘记密码</a>
+                        </p>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+</body>
+
+</html>

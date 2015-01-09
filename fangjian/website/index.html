@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
 
     <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script type="text/javascript" src="script/jquery-1.11.2.min.js"></script>
 		<link rel="stylesheet" href="css/home.css">
 		
 	</head>
@@ -229,17 +229,20 @@ $(document).ready(function() {
                                                            'margin-top' : -popMargTop,
                                                            'margin-left' : -popMargLeft
                                                            });
-                                           $('body').append('<div id="mask"></div>');
+                                           $('body').append('<div id="mask" class="close"></div>');
                                            $('#mask').fadeIn(300);
                                            
                                            return false;
                                            });
-                  $('a.close, #mask').live('click', function(){
+                  $('body').on('click', '.close', function(){
                                            $('#mask, .loginPopup').fadeOut(300, function(){
                                                                            $('#mask').remove();
                                                                            });
+                                  
                                            return false;
                                            });
+                  
+                  
                   });
 
 </script>

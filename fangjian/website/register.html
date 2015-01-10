@@ -8,8 +8,8 @@
 <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
 
     <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
-    <script type="text/javascript" src="script/jquery-1.11.2.min.js"></script>
-		<link rel="stylesheet" href="css/home.css">
+    <script type="text/javascript" src="Scripts/jquery-1.11.2.min.js"></script>
+		<link rel="stylesheet" href="Content/home.css">
 		
 	</head>
 	
@@ -59,5 +59,37 @@
     </div>
     
 </body>
+
+<script>
+    
+    
+    //log in functionality
+    $(document).ready(function() {
+                      $('a.loginWindow').click(function() {
+                                               var loginBox=$(this).attr('href');
+                                               $(loginBox).fadeIn(300);
+                                               var popMargTop=($(loginBox).height()+24)/2;
+                                               var popMargLeft=($(loginBox).height()+24)/2;
+                                               $(loginBox).css({
+                                                               'margin-top' : -popMargTop,
+                                                               'margin-left' : -popMargLeft
+                                                               });
+                                               $('body').append('<div id="mask" class="close"></div>');
+                                               $('#mask').fadeIn(300);
+                                               
+                                               return false;
+                                               });
+                      $('body').on('click', '.close', function(){
+                                   $('#mask, .loginPopup').fadeOut(300, function(){
+                                                                   $('#mask').remove();
+                                                                   });
+                                   
+                                   return false;
+                                   });
+                      
+                      
+                      });
+</script>
+    
 
 </html>

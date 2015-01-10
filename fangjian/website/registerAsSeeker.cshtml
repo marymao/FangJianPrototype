@@ -1,0 +1,253 @@
+@section Scripts {
+    <script src="/Scripts/jquery.validate.min.js"></script>
+    <script src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}
+
+@{
+    Layout = "/_SiteLayout.cshtml";
+    Page.Title = "新用户注册";
+
+    // Initialize general page variables
+    var email = "";
+    var password = "";
+    var confirmPassword = "";
+
+    // Setup validation
+    Validation.RequireField("email", "You must specify an email address.");
+    Validation.RequireField("password", "Password cannot be blank.");
+    Validation.Add("confirmPassword",
+        Validator.EqualsTo("password", "Password and confirmation password do not match."));
+    Validation.Add("password",
+        Validator.StringLength(
+            maxLength: Int32.MaxValue,
+            minLength: 6,
+            errorMessage: "Password must be at least 6 characters"));
+    Validation.RequireField("confirmService", "请同意服务协议！");
+	Validation.Add("cell",
+		Validator.StringLength(
+			maxLength: 11,
+			minLength: 11,
+			errorMessage: "请输入正确的电话号码！"));
+
+    // If this is a POST request, validate and process data
+    if (IsPost) {
+        AntiForgery.Validate();
+        email = Request.Form["email"];
+        password = Request.Form["password"];
+        confirmPassword = Request.Form["confirmPassword"];
+
+        // Validate the user's captcha answer
+        // if (!ReCaptcha.Validate("PRIVATE_KEY")) {
+        //     ModelState.AddError("recaptcha", "Captcha response was not correct");
+        // }
+
+        // If all information is valid, create a new account
+        if (Validation.IsValid()) {
+            // Insert a new user into the database
+            var db = Database.Open("FangjianDb");
+
+            // Check if user already exists
+            var user = db.QuerySingle("SELECT Email FROM UserProfile WHERE LOWER(Email) = LOWER(@0)", email);
+            if (user == null) {
+                // Insert email into the profile table
+                db.Execute("INSERT INTO UserProfile (Email) VALUES (@0)", email);
+
+                // Create and associate a new entry in the membership database.
+                // If successful, continue processing the request
+                try {
+                    bool requireEmailConfirmation = !WebMail.SmtpServer.IsEmpty();
+                    var token = WebSecurity.CreateAccount(email, password, requireEmailConfirmation);
+                    if (requireEmailConfirmation) {
+                        var hostUrl = Request.Url.GetComponents(UriComponents.SchemeAndServer, UriFormat.Unescaped);
+                        var confirmationUrl = hostUrl + VirtualPathUtility.ToAbsolute("../Account/Confirm?confirmationCode=" + HttpUtility.UrlEncode(token));
+
+                        WebMail.Send(
+                            to: email,
+                            subject: "Please confirm your account",
+                            body: "Your confirmation code is: " + token + ". Visit <a href=\"" + confirmationUrl + "\">" + confirmationUrl + "</a> to activate your account."
+                        );
+                    }
+
+                    if (requireEmailConfirmation) {
+                        // Thank the user for registering and let them know an email is on its way
+                        Response.Redirect("../Account/Thanks");
+                    } else {
+                        // Navigate back to the homepage and exit
+                        WebSecurity.Login(email, password);
+
+                        Response.Redirect("../Default");
+                    }
+                } catch (System.Web.Security.MembershipCreateUserException e) {
+                    ModelState.AddFormError(e.Message);
+                }
+            } else {
+                // User already exists
+                ModelState.AddFormError("Email address is already in use.");
+            }
+        }
+    }
+}
+
+
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		
+		<!-- YUI css https://github.com/yui/yui3/wiki/Quick-Start -->		
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
+
+    <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="Scripts/jquery-1.11.2.min.js"></script>
+		<link rel="stylesheet" href="Content/home.css">
+		
+	</head>
+	
+<body>
+    
+    <div id="layout">
+
+
+        <img src="images/logo.png"/>
+        <div id="registerGuide" class="yui3-g">
+            <div class="yui3-u-1-8 centerText"> 注册  </div>
+            <div class="yui3-u-7-8" id="description"> 在坊间，体验一种全新的生活方式<br>便利、高效地找到最合适的专业人士，与您一起完成目标
+            </div>
+
+            <div class="yui3-u-1-8 centerText"> 【一】</div>
+            <div class="yui3-u-7-8 centerText">
+                登录信息
+            </div>
+			<form method="post">
+    			@AntiForgery.GetHtml()
+    			@* If at least one validation error exists, notify the user *@
+    			@Html.ValidationSummary("Account creation was unsuccessful. Please correct the errors and try again.", excludeFieldErrors: true, htmlAttributes: null)
+    			<fieldset>
+                <div class="yui3-u-1-8 centerText">
+                
+                </div>
+
+                <div class="yui3-u-7-8">
+                    <!--TODO: register form-->                
+
+        			<ol>
+        				<!--TODO: make it phone number enabled-->
+            			<li class="email">
+                			<label for="email" @if(!ModelState.IsValidField("email")){<text>class="error-label"</text>}>登录名</label>
+                			<input type="text" id="email" name="email" value="@email" @Validation.For("email") />
+                			@* Write any email validation errors to the page *@
+                			@Html.ValidationMessage("email")
+            			</li>
+			            <li class="password">
+                			<label for="password" @if(!ModelState.IsValidField("password")) {<text>class="error-label"</text>}>密码</label>
+                			<input type="password" id="password" name="password" @Validation.For("password") />
+                			@* Write any password validation errors to the page *@
+                			@Html.ValidationMessage("password")
+            			</li>
+            			<li class="confirm-password">
+                			<label for="confirmPassword" @if(!ModelState.IsValidField("confirmPassword")) {<text>class="error-label"</text>}>确认密码</label>
+                			<input type="password" id="confirmPassword" name="confirmPassword" @Validation.For("confirmPassword") />
+                			@* Write any password validation errors to the page *@
+                			@Html.ValidationMessage("confirmPassword")
+            			</li>
+            			<li class="confirm-service">
+                			<label for="confirmService" @if(!ModelState.IsValidField("confirmService")) {<text>class="error-label"</text>}>统一服务条款</label>
+                			<input type="radio" id="confirmService" name="confirmService" @Validation.For("confirmService") />
+                			@* Write any password validation errors to the page *@
+                			@Html.ValidationMessage("confirmService")
+            			</li>
+						<li>
+							<input type="submit" value="注册" />
+						</li>
+						<li>
+							<p class="centerText">或者</p>
+						</li>
+						<li>
+							<button>新浪微博登录</button>
+						</li>
+						<li>
+							<button>微信登陆</button>
+						</li>
+
+        			</ol>
+				</div>
+
+				<div class="yui3-u-1-8 centerText"> 【二】</div>
+            	<div class="yui3-u-7-8 centerText">
+                	个人档案
+            	</div>
+
+				<div class="yui3-u-1-8">
+
+				</div>
+
+				<div class="yui3-u-7-8">
+					<div>
+						<img src="images/avatar.png"/>
+					</div>
+
+
+        			<ol>
+            			<li class="name">
+            				<span>
+            				    <label for="lastName" @if(!ModelState.IsValidField("lastName")){<text>class="error-label"</text>}>姓</label>
+                				<input type="text" id="lastName" name="lastName" value="@lastName" @Validation.For("lastName") />
+                				@* Write any email validation errors to the page *@
+                				@Html.ValidationMessage("firstName")
+
+                				<label for="firstName" @if(!ModelState.IsValidField("firstName")){<text>class="error-label"</text>}>名</label>
+                				<input type="text" id="firstName" name="firstName" value="@firstName" @Validation.For("firstName") />
+                				@* Write any email validation errors to the page *@
+                				@Html.ValidationMessage("firstName")
+                			</span>
+            			</li>
+            			<li class="cell">
+							<label for="cell" @if(!ModelState.IsValidField("cell")){<text>class="error-label"</text>}>姓</label>
+                			<input type="text" id="cell" name="cell" value="@cell" @Validation.For("cell") />
+                			@* Write any email validation errors to the page *@
+                			@Html.ValidationMessage("cell")
+            			</li>
+
+					</ol>
+
+				</div>
+
+				<div class="yui3-u-1-8 centerText"> 【完成】</div>
+            	<div class="yui3-u-7-8 centerText">
+        	        <button>
+						加入坊间
+					</button>
+            	</div>
+				
+
+
+				</fieldset>
+
+			</form>
+        </div>
+    </div>
+	<div>
+        <div class="yui3-g">
+            <div class="yui3-u-1-3">
+                <div class="social">
+                    <a href="" target="_blank" class="icon wc"></a>
+                    <a href="" target="_blank" class="icon wb"></a>
+                    <a href="" target="_blank" class="icon db"></a>
+                    <a href="" target="_blank" class="icon bl"></a>
+                </div>
+            </div>
+            <div class="yui3-u-1-3">
+                坊间团队|联系我们|隐私条例|帮助中心
+            </div>
+            <div class="yui3-u-1-3">
+                <div class="mobile">
+                    <!--这里如果想做成和Social一样的效果，只要做出有颜色的背景图和灰度的按钮图即可-->
+                    <button>Android</button>
+                    <button>iOS</button>
+                </div>
+            </div>
+        </div>
+	</div>
+</body>
+
+</html>

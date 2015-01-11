@@ -1,0 +1,76 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@{
+    //Layout = "../_SiteLayout.cshtml";
+    Page.Title = "Log in";
+
+    // Initialize general page variables
+    var email = "";
+    var password = "";
+    var rememberMe = false;
+
+    //var returnUrl = Request.QueryString["ReturnUrl"];
+    //if (returnUrl.IsEmpty()) {
+    //    // Some external login providers always require a return URL value
+    //    returnUrl = Href("Default.cshtml");
+    //}
+
+    // If this is a POST request, validate and process data
+    if (IsPost)
+    {
+        //AntiForgery.Validate();
+        // is this an external login request?
+            email = Request.Form["email"];
+            password = Request.Form["password"];
+            rememberMe = Request.Form["rememberMe"].AsBool();
+
+            if (WebSecurity.UserExists(email) && WebSecurity.GetPasswordFailuresSinceLastSuccess(email) > 4 && WebSecurity.GetLastPasswordFailureDate(email).AddSeconds(60) > DateTime.UtcNow)
+            {
+                //Response.Redirect("../Account/AccountLockedOut");
+                return;
+            }
+
+            // Attempt to log in using provided credentials
+            if (WebSecurity.Login(email, password, rememberMe))
+            {
+                //Context.RedirectLocal(returnUrl);
+                return;
+            }
+            else
+            {
+                ModelState.AddFormError("The user name or password provided is incorrect.");
+            }
+    }
+}
+
+<hgroup class="title">
+    <h1>@Page.Title.</h1>
+</hgroup>
+
+<section id="loginForm">
+    <h2>Use a local account to log in.</h2>
+    <form method="post">
+     
+
+        <fieldset>
+            <legend>Log in to Your Account</legend>
+            <ol>
+                <li class="email">
+                    <label for="email">Email address</label>
+                    <input type="text" id="email" name="email" value="@email" />
+                    @* Write any user name validation errors to the page *@
+                </li>
+                <li class="password">
+                    <label for="password" >Password</label>
+                    <input type="password" id="password" name="password" />
+                    @* Write any password validation errors to the page *@
+                </li>
+                <li class="remember-me">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" value="true" checked="@rememberMe" />
+                    <label class="checkbox" for="rememberMe">Remember me?</label>
+                </li>
+            </ol>
+            <input type="submit" value="Log in" />
+        </fieldset>
+    </form>
+</section>

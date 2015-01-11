@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+@{
+    Page.Title = "坊间，让您与专业人士一起完成个人目标";
+}
+
+@{
+
+    // Initialize general page variables
+    var username = "";
+    var password = "";
+    var rememberMe = false;
+
+    // Setup validation
+    Validation.RequireField("username", "You must specify an email address.");
+    Validation.RequireField("password", "You must specify a password.");
+    Validation.Add("password",
+    System.Web.WebPages.Validator.StringLength(
+            maxLength: Int32.MaxValue,
+            minLength: 6,
+            errorMessage: "Password must be at least 6 characters"));
+
+    // If this is a POST request, validate and process data
+    if (IsPost)
+    {
+        AntiForgery.Validate();
+        // is this an external login request?
+        string provider = Request.Form["provider"];
+        if (!provider.IsEmpty())
+        {
+            //OAuthWebSecurity.RequestAuthentication(provider, Href("Account/RegisterService.cshtml", new { returnUrl }));
+            return;
+        }
+        else if (Validation.IsValid())
+        {
+            username = Request.Form["username"];
+            password = Request.Form["password"];
+            rememberMe = Request.Form["rememberMe"].AsBool();
+
+            if (WebSecurity.UserExists(username) && WebSecurity.GetPasswordFailuresSinceLastSuccess(username) > 4 && WebSecurity.GetLastPasswordFailureDate(username).AddSeconds(60) > DateTime.UtcNow)
+            {
+                Response.Redirect("Account/AccountLockedOut");
+                return;
+            }
+
+            // Attempt to log in using provided credentials
+            if (WebSecurity.Login(username, password, rememberMe))
+            {
+                Context.RedirectLocal("Default.cshtml");
+                return;
+            }
+            else
+            {
+                ModelState.AddFormError("The user name or password provided is incorrect.");
+            }
+        }
+    }
+}
+
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>@Page.Title</title>
+		
+		<!-- YUI css https://github.com/yui/yui3/wiki/Quick-Start -->		
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
+	    <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+
+        <!--From SiteLayout template-->
+        <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <script src="Scripts/jquery-1.10.2.min.js"></script>
+        <script src="Scripts/jquery-ui-1.10.3.js"></script>
+        <script src="Scripts/modernizr-2.6.2.js"></script>
+        <meta name="viewport" content="width=device-width" />
+
+	    <!--CSS file path-->
+        <link href="Content/home.css" rel="stylesheet">
+        <meta name="description" content="The description of my page" />
+</head>
+	
+<body>
+<header>
+    <div class="float-right">
+        <section id="logged">
+            @if (WebSecurity.IsAuthenticated)
+            {
+                <text>
+                    欢迎, <a class="email" href="Account/Manage.cshtml" title="Manage">@WebSecurity.CurrentUserName</a>!
+                    <form id="logoutForm" action="Account/Logout.cshtml" method="post">
+                        @AntiForgery.GetHtml()
+                        <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
+                    </form>
+                </text>
+            }
+            else
+            {
+                <div id="toolbar">
+                    <a href="#loginBox" class="loginWindow">登陆</a>|<a href="register.html">注册</a>|<a href="Help.cshtml">帮助中心</a>
+
+                    <div id="loginBox" class="loginPopup">
+                        <a href="#" class="close">关闭</a>
+                        <form id="signin" method="POST">
+                            @AntiForgery.GetHtml()
+                            @* If one or more validation errors exist, show an error *@
+                            @*@Html.ValidationSummary("Log in was unsuccessful. Please correct the errors and try again.", excludeFieldErrors: true, htmlAttributes: null)*@
+                            <fieldset class="textbox">
+                                <ol>
+                                    <li class="username">
+                                        <label for="username" @if (!ModelState.IsValidField("email"))
+                                                              {
+                                                                  <text> class="error-label" </text>
+                                                              }>Email address</label>
+
+                                        <input id="username" name="username" value="" type="text" autocomplete="on" placeholder="Username">
+                                    </li>
+                                    <li class="password">
+                                        <label for="password" @if (!ModelState.IsValidField("password"))
+                                                              {
+                                                                  <text> class="error-label" </text>
+                                                              }>Password</label>
+                                        <input id="password" name="password" value="" type="password" placeholder="Password">
+                                    </li>
+                                    <li class="remember-me">
+                                        <input type="checkbox" id="rememberMe" name="rememberMe" value="true" checked="@rememberMe"/>
+                                        <label class="checkbox" for="rememberMe">Remember me?</label>
+                                    </li>
+                                </ol>
+                                <input type="submit" value="Log in"/>
+                            </fieldset>
+                        </form>
+                        <p>
+                            <a href="Account/Register.cshtml">Don't have a Account?</a>
+                            <a href="Account/ForgotPassword.cshtml">Did you forget your password?</a>
+                        </p>
+                    </div>
+
+                </div>
+            }
+        </section>
+    </div>
+
+        <img src="images/logo.png" />
+
+        <h1 id="slogan">
+            与专业人士一起完成个人项目
+        </h1>
+
+        <div id="volumeControl" class="yui3-skin-round">
+            <span>坊间故事</span>
+            <span class="volumeSlider"></span>
+
+        </div>
+</header>
+    
+    <!--TODO: slide request effect-->
+    <div id="requestBox">
+        <h2>告诉我们：</h2>
+        <form id="requestFrom">
+            <span>我想要</span>
+            <input type="text" name="requestType"/>，我在
+            <select>
+                <option value="sz">深圳</option>
+                <option value="bj">北京</option>
+                <option value="sh">上海</option>
+            </select>
+            <br>
+            <input type="submit" value="确认">
+        </form>
+    </div>
+
+    <div id="layout">
+
+		<div id="categories" class="block">
+			<h1 class="intro" id="categoryIntro"> 在坊间，随时都有一群热情优秀的专业人士，帮助您达成您的各种目标</h1>
+			<div class="yui3-g" id="categoryPicRow1">
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+			<div class="yui3-g" id="categoryPicRow2">
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+		</div>
+		
+		<div id="steps" class="block">
+			<h1 class="intro" id="stepIntro"> 高效智能地为您搜索最合适的专业人士，开启愉快、安全的合作之旅</h1>
+			<hr>
+			<h2 class="intro"> 具体流程 </h2>
+			<div class="yui3-g" id="stepRow">
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+		</div>
+		
+		<div id="pros" class="block">
+			<h1 class="intro" id="prosIntro"> 我驻扎在坊间</h1>
+			<hr>
+			<h2 class="intro"> 坊间为专业人士提供了一个公平、有效的拓展事业的平台 </h2>
+			<div class="yui3-g" id="prosRow">
+				<div class="yui3-u-2-3">
+					<img src="images/pPicPlaceHolderBig.png" >
+				</div>
+				<div class="yui3-u-1-3">
+					<img src="images/catPicPlaceHolder.png"/>
+					<img src="images/catPicPlaceHolder.png"/>
+					<p>如果您是一位有理想的专业人士，请带着您的热情和执着</p>
+					<button>加入我们</button>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div id="more" class="block">
+			<h1 class="intro" id="moreIntro"> 探索更多</h1>
+            <hr>
+			<div class="yui3-g" id="moreRow">
+				<div class="yui3-u-1-2">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+				<div class="yui3-u-1-2">
+					<img src="images/catPicPlaceHolder.png"/>
+				</div>
+			</div>
+		</div>
+		
+
+		
+    </div>
+	<div id="footer">
+		<div class="yui3-g">
+			<div class="yui3-u-1-2">
+				<h2>关于我们</h2>
+				<p>BLABLABLABLABLABLABLABLABLABLABLABLABLABLABLABLAB</P>
+			</div>
+			<div class="yui3-u-1-2">
+				<form id="contactUs">
+					<div class="yui3-g">
+						<div class="yui3-u-1-2">
+							姓名：<input type="text" name="name">
+						</div>
+						<div class="yui3-u-1-2">
+							邮箱：<input type="email" name="email">
+						</div>
+					</div>
+					<div>
+						<textarea name="message" rows="10" cols="60">
+						
+						</textarea>
+					</div>
+					<input type="submit" value="提交" name="submit">
+				</form>
+			</div>
+		</div>
+	
+	</div>	
+        <div class="yui3-g centerText">
+            <div class="yui3-u-1-3">
+                <div class="social  yui3-u-1-3">
+                    <a href="" target="_blank" class="icon wc"></a>
+                    <a href="" target="_blank" class="icon wb"></a>
+                    <a href="" target="_blank" class="icon db"></a>
+                    <a href="" target="_blank" class="icon bl"></a>
+                </div>
+            </div>
+            <div class="yui3-u-1-3">
+                坊间团队|联系我们|隐私条例|帮助中心
+            </div>
+            <div class="yui3-u-1-3">
+                <div class="mobile">
+                    <!--这里如果想做成和Social一样的效果，只要做出有颜色的背景图和灰度的按钮图即可-->
+                    <button>Android</button>
+                    <button>iOS</button>
+                </div>
+            </div>                
+        </div>
+</body>
+<script>
+
+    YUI({
+        skin: {
+            overrides: {
+                "slider-base": ["round"]
+            }
+        }
+    }).use("slider", function (y) {
+
+        var xSlider = new y.Slider();
+        xSlider.setAttrs("thumbUrl", "images/volumeControl.png");
+        xSlider.render('.volumeSlider');
+
+
+
+    });
+
+
+    //log in functionality
+    $(document).ready(function () {
+        $('a.loginWindow').click(function () {
+            var loginBox = $(this).attr('href');
+            $(loginBox).fadeIn(300);
+            var popMargTop = ($(loginBox).height() + 24) / 2;
+            var popMargLeft = ($(loginBox).height() + 24) / 2;
+            $(loginBox).css({
+                'margin-top': -popMargTop,
+                'margin-left': -popMargLeft
+            });
+            $('body').append('<div id="mask" class="close"></div>');
+            $('#mask').fadeIn(300);
+
+            return false;
+        });
+        $('body').on('click', '.close', function () {
+            $('#mask, .loginPopup').fadeOut(300, function () {
+                $('#mask').remove();
+            });
+            return false;
+        });
+    });
+
+</script>
+
+</html>

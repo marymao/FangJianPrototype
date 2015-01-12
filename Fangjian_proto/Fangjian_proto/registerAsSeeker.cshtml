@@ -16,15 +16,24 @@
     var firstName = "";
     var cell = "";
 
+    var showSecondPart = false;
 
 
     // If this is a POST request, validate and process data
     if (IsPost) {
 
-        <p>@Request["profileForm"]</p>
 
         if (!Request["profileForm"].IsEmpty()) {
+            showSecondPart = true;            
+            var emailReturned = Request.Form["emailReturned"];
+            email = emailReturned;
 
+          <p>hahahahahaha</p>
+
+
+            Validation.RequireField("cell", "请输入手机号码");
+            Validation.RequireField("firstName", "请输入您的名字");
+            Validation.RequireField("lastName", "请输入您的姓氏");
             Validation.Add("cell",
                 Validator.StringLength(
                     maxLength: 11,
@@ -32,7 +41,7 @@
                     errorMessage: "手机号码不正确！"));
             //TODO: validation for names
 
-            AntiForgery.Validate();
+            //AntiForgery.Validate();
             lastName = Request.Form["lastName"];
             firstName = Request.Form["firstName"];
             cell = Request.Form["cell"];
@@ -40,7 +49,25 @@
             //TODO: update database with profile info
 
             if (Validation.IsValid()) {
-               Response.Redirect("Account/Thanks");
+
+                var db = Database.Open("FangjianDb");
+
+                
+                // Check if user already exists
+                var userId = db.QuerySingle("SELECT UserId FROM UserProfile WHERE LOWER(Email) = LOWER(@0)", emailReturned);
+                var detailUserId = db.QuerySingle("SELECT UserId FROM userProfileDetail WHERE LOWER(EmailAddress) = LOWER(@0)", emailReturned);
+                if (userId == null) {
+                    //error!!cannot be null!!
+                } else {
+                    if (detailUserId != null) {
+                        <text>detailInfoAlreadyExist!</text>
+                    } else {
+                        int id = userId[0];
+                        db.Execute("INSERT INTO userProfileDetail (UserId, EmailAddress, LastName, FirstName, Cell) VALUES (@0, @1, @2, @3, @4)", id, emailReturned, lastName, firstName, cell);
+
+                        Response.Redirect("Default");
+                    }
+                }
             } 
 
         } else if (!Request["basicForm"].IsEmpty()) {
@@ -98,7 +125,10 @@
                             );
                         }
 
-                        if (requireEmailConfirmation) {
+                        showSecondPart=true;
+                        WebSecurity.Login(email, password);
+
+                        @*if (requireEmailConfirmation) {
                             // Thank the user for registering and let them know an email is on its way
                             Response.Redirect("Account/Thanks");
                         } else {
@@ -106,7 +136,8 @@
                             WebSecurity.Login(email, password);
 
                             Response.Redirect("Default");
-                        }
+                        }*@
+                        
                     } catch (System.Web.Security.MembershipCreateUserException e) {
                         ModelState.AddFormError(e.Message);
                     }
@@ -149,121 +180,136 @@
             <div class="yui3-u-7-8 centerText">
                 登录信息
             </div>
+            <div id="seekerPartOne">
                 <div class="yui3-u-1-8 centerText">
                     <hr id="vlPartOne" class="verticalLine" width="1">
                 </div>
 
                 <div id="formPartOne" class="yui3-u-7-8">
+                    @if (showSecondPart) {
+                        <div id="seekerFirstMask"></div>
+                    }
                     
-			    <form method="post">
-    			    @AntiForgery.GetHtml()
-    			    @* If at least one validation error exists, notify the user *@
-    			    @Html.ValidationSummary("Account creation was unsuccessful. Please correct the errors and try again.", excludeFieldErrors: true, htmlAttributes: null)
-    			    <fieldset>         
+			        <form method="post">
+    			        @AntiForgery.GetHtml()
+    			        @* If at least one validation error exists, notify the user *@
+    			        @Html.ValidationSummary("Account creation was unsuccessful. Please correct the errors and try again.", excludeFieldErrors: true, htmlAttributes: null)
+    			        <fieldset>         
+
+        			        <ul>
+        				        <!--TODO: make it phone number enabled-->
+            			        <li class="email">
+                			        <label for="email" @if(!ModelState.IsValidField("email")){<text>class="error-label"</text>}>登录名</label>
+                			        <input type="text" id="email" name="email" value="@email" @Validation.For("email") />
+                			        @* Write any email validation errors to the page *@
+                			        @Html.ValidationMessage("email")
+            			        </li>
+			                    <li class="password">
+                			        <label for="password" @if(!ModelState.IsValidField("password")) {<text>class="error-label"</text>}>密码</label>
+                			        <input type="password" id="password" name="password" @Validation.For("password") />
+                			        @* Write any password validation errors to the page *@
+                			        @Html.ValidationMessage("password")
+            			        </li>
+            			        <li class="confirm-password">
+                			        <label for="confirmPassword" @if(!ModelState.IsValidField("confirmPassword")) {<text>class="error-label"</text>}>确认密码</label>
+                			        <input type="password" id="confirmPassword" name="confirmPassword" @Validation.For("confirmPassword") />
+                			        @* Write any password validation errors to the page *@
+                			        @Html.ValidationMessage("confirmPassword")
+            			        </li>
+            			        <li class="confirm-service">
+                			        <label for="confirmService" @if(!ModelState.IsValidField("confirmService")) {<text>class="error-label"</text>}>同意服务条款</label>
+                			        <input type="checkbox" id="confirmService" name="confirmService" @Validation.For("confirmService") />
+                			        @* Write any password validation errors to the page *@
+                			        @Html.ValidationMessage("confirmService")
+            			        </li>
+						        <li class="centerText" >
+							        <input type="submit" value="注册"  name="basicForm"/>
+						        </li>
+						        <li >
+							        <p class="centerText">或者</p>
+						        </li>
+						        <li class="centerText" >
+							        <button>新浪微博登录</button>
+						        </li>
+						        <li class="centerText" >
+							        <button>微信登陆</button>
+						        </li>
+
+        			        </ul>
+				        </fieldset>
+			        </form>
+				</div>
+            </div>
+
+
+            <form method="post">
+                <div id="seekerPartTwo">
+                    @if (!showSecondPart) {
+                        <div id="seekerSecondMask"></div>
+                    }
+				    <div class="yui3-u-1-8 centerText"> 【二】</div>
+            	    <div class="yui3-u-7-8 centerText">
+                	    个人档案
+            	    </div>
+
+				    <div class="yui3-u-1-8 centerText">
+                        <hr id="vlPartTwo" class="verticalLine" width="1">
+				    </div>
+
+
+
+				    <div id="formPartTwo" class="yui3-u-7-8">
+    			        @AntiForgery.GetHtml()
+    			        @* If at least one validation error exists, notify the user *@
+    			        @Html.ValidationSummary("Account update was unsuccessful. Please correct the errors and try again.", excludeFieldErrors: true, htmlAttributes: null)
+
+                    <fieldset>
+
+					    <div class="uploadAvatar centerText">
+						    <img src="images/avatar.png"/>
+					    </div>
+
 
         			    <ul>
-        				    <!--TODO: make it phone number enabled-->
-            			    <li class="email">
-                			    <label for="email" @if(!ModelState.IsValidField("email")){<text>class="error-label"</text>}>登录名</label>
-                			    <input type="text" id="email" name="email" value="@email" @Validation.For("email") />
+            			    <li class="name">
+            				    <span>
+            				        <label for="lastName" @if(!ModelState.IsValidField("lastName")){<text>class="error-label"</text>}>姓</label>
+                				    <input type="text" id="lastName" name="lastName" value="@lastName" @Validation.For("lastName") />
+                				    @* Write any email validation errors to the page *@
+                				    @Html.ValidationMessage("firstName")
+
+                				    <label for="firstName" @if(!ModelState.IsValidField("firstName")){<text>class="error-label"</text>}>名</label>
+                				    <input type="text" id="firstName" name="firstName" value="@firstName" @Validation.For("firstName") />
+                				    @* Write any email validation errors to the page *@
+                				    @Html.ValidationMessage("firstName")
+                			    </span>
+            			    </li>
+            			    <li class="cell">
+							    <label for="cell" @if(!ModelState.IsValidField("cell")){<text>class="error-label"</text>}>手机号码</label>
+                			    <input type="text" id="cell" name="cell" value="@cell" @Validation.For("cell") />
                 			    @* Write any email validation errors to the page *@
-                			    @Html.ValidationMessage("email")
+                			    @Html.ValidationMessage("cell")
             			    </li>
-			                <li class="password">
-                			    <label for="password" @if(!ModelState.IsValidField("password")) {<text>class="error-label"</text>}>密码</label>
-                			    <input type="password" id="password" name="password" @Validation.For("password") />
-                			    @* Write any password validation errors to the page *@
-                			    @Html.ValidationMessage("password")
-            			    </li>
-            			    <li class="confirm-password">
-                			    <label for="confirmPassword" @if(!ModelState.IsValidField("confirmPassword")) {<text>class="error-label"</text>}>确认密码</label>
-                			    <input type="password" id="confirmPassword" name="confirmPassword" @Validation.For("confirmPassword") />
-                			    @* Write any password validation errors to the page *@
-                			    @Html.ValidationMessage("confirmPassword")
-            			    </li>
-            			    <li class="confirm-service">
-                			    <label for="confirmService" @if(!ModelState.IsValidField("confirmService")) {<text>class="error-label"</text>}>同意服务条款</label>
-                			    <input type="checkbox" id="confirmService" name="confirmService" @Validation.For("confirmService") />
-                			    @* Write any password validation errors to the page *@
-                			    @Html.ValidationMessage("confirmService")
-            			    </li>
-						    <li class="centerText" >
-							    <input type="submit" value="注册"  name="basicForm"/>
-						    </li>
-						    <li >
-							    <p class="centerText">或者</p>
-						    </li>
-						    <li class="centerText" >
-							    <button>新浪微博登录</button>
-						    </li>
-						    <li class="centerText" >
-							    <button>微信登陆</button>
-						    </li>
 
-        			    </ul>
-				    </fieldset>
-			    </form>
-				</div>
+					    </ul>
 
+                        <input type="hidden" name="emailReturned" value="@email" />
 
-                <form method="post">
-				<div class="yui3-u-1-8 centerText"> 【二】</div>
-            	<div class="yui3-u-7-8 centerText">
-                	个人档案
-            	</div>
+				    </div>
 
-				<div class="yui3-u-1-8 centerText">
-                    <hr id="vlPartTwo" class="verticalLine" width="1">
-				</div>
-
-
-
-				<div id="formPartTwo" class="yui3-u-7-8">
-    			    @AntiForgery.GetHtml()
-    			    @* If at least one validation error exists, notify the user *@
-    			    @Html.ValidationSummary("Account update was unsuccessful. Please correct the errors and try again.", excludeFieldErrors: true, htmlAttributes: null)
-
-                <fieldset>
-
-					<div class="uploadAvatar centerText">
-						<img src="images/avatar.png"/>
-					</div>
-
-
-        			<ul>
-            			<li class="name">
-            				<span>
-            				    <label for="lastName" @if(!ModelState.IsValidField("lastName")){<text>class="error-label"</text>}>姓</label>
-                				<input type="text" id="lastName" name="lastName" value="@lastName" @Validation.For("lastName") />
-                				@* Write any email validation errors to the page *@
-                				@Html.ValidationMessage("firstName")
-
-                				<label for="firstName" @if(!ModelState.IsValidField("firstName")){<text>class="error-label"</text>}>名</label>
-                				<input type="text" id="firstName" name="firstName" value="@firstName" @Validation.For("firstName") />
-                				@* Write any email validation errors to the page *@
-                				@Html.ValidationMessage("firstName")
-                			</span>
-            			</li>
-            			<li class="cell">
-							<label for="cell" @if(!ModelState.IsValidField("cell")){<text>class="error-label"</text>}>手机号码</label>
-                			<input type="text" id="cell" name="cell" value="@cell" @Validation.For("cell") />
-                			@* Write any email validation errors to the page *@
-                			@Html.ValidationMessage("cell")
-            			</li>
-
-					</ul>
-
-				</div>
-
-                </fieldset>
+                    </fieldset>
+                </div>
 
 				<div class="yui3-u-1-8 centerText"> 【完成】</div>
             	<div class="yui3-u-7-8 centerText">
-        	        <input type="submit" value="加入坊间"  name="profileForm"/>
+        	        <input type="submit" value="加入坊间"  name="profileForm" 
+                    @if (!showSecondPart) {
+                        <text>disabled</text>
+                    }/>
 						
             	</div>
 				
-                </form>
+            </form>
 
         </div>
     </div>

@@ -22,26 +22,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Fangjian_proto", "http://lo
 		SlnRelativePath = "Fangjian_proto\"
 		DefaultWebSiteLanguage = "Visual C#"
 	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		UseIISExpress = "true"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.1"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_4797"
-		Debug.AspNetCompiler.PhysicalPath = "Fangjian_proto\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_4797\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_4797"
-		Release.AspNetCompiler.PhysicalPath = "Fangjian_proto\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_4797\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "Fangjian_proto\"
-		DefaultWebSiteLanguage = "Visual C#"
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -80,17 +80,17 @@
 	
 <body>
 <header>
-    <div class="float-right">
+    <div>
         <section id="logged">
             @if (WebSecurity.IsAuthenticated)
             {
-                <text>
+                <div id="toolbar">
                     欢迎, <a class="email" href="Account/Manage.cshtml" title="Manage">@WebSecurity.CurrentUserName</a>!
                     <form id="logoutForm" action="Account/Logout.cshtml" method="post">
                         @AntiForgery.GetHtml()
                         <a href="javascript:document.getElementById('logoutForm').submit()">Log out</a>
                     </form>
-                </text>
+                </div>
             }
             else
             {
@@ -276,7 +276,7 @@
 	</div>	
         <div class="yui3-g centerText">
             <div class="yui3-u-1-3">
-                <div class="social  yui3-u-1-3">
+                <div class="social yui3-u-1-3">
                     <a href="" target="_blank" class="icon wc"></a>
                     <a href="" target="_blank" class="icon wb"></a>
                     <a href="" target="_blank" class="icon db"></a>

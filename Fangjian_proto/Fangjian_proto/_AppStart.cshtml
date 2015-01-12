@@ -1,6 +1,8 @@
 ﻿@{
     WebSecurity.InitializeDatabaseConnection("FangjianDb", "UserProfile", "UserId", "Email", autoCreateTables: true);
 
+    AntiForgeryConfig.SuppressIdentityHeuristicChecks = true;
+
     // To let users of this site log in using their accounts from other sites such as Microsoft, Facebook, Twitter,
     // you must update this site. For more information visit http://go.microsoft.com/fwlink/?LinkID=226949
 

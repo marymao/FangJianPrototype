@@ -18,6 +18,41 @@
     z-index: 999;
 }
 
+#seekerFirstMask {
+    background: #000;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    z-index: 999;
+}
+
+#seekerSecondMask {
+    background: #000;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+    z-index: 999;
+}
+
+#seekerPartOne
+{
+    position: relative;
+}
+
+#seekerPartTwo
+{
+    position: relative;
+}
+
+
 
 /* You can customize to your needs  */
 .loginPopup {
@@ -43,7 +78,7 @@
     -moz-border-radius: 3px;
     /* Firefox */
     -webkit-border-radius: 3px;
-    /* Safari, Chrome */;
+    /* Safari, Chrome */
 }
 
 #requestBox {
@@ -106,6 +141,8 @@
 }
 
 .social {
+    width: 160px;
+    height: 40px;
     background: url(../images/social-icons.png);
     background-repeat:no-repeat;
 }

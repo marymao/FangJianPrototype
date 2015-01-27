@@ -189,6 +189,18 @@ ul {
 {
     text-align:center;
 }
+
+
+/* dashboard*/
+.projectCard
+{
+    display: inline-block;
+    margin: 50px;
+    padding: 50px;
+}
+
+
+
 	
 	@media(max-width: 800px) {
         #layout {

@@ -1,0 +1,65 @@
+﻿
+    @{
+
+
+        Layout = "/_SiteLayout.cshtml";
+
+    }
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>坊间，让您与专业人士一起完成个人目标</title>
+		
+		<!-- YUI css https://github.com/yui/yui3/wiki/Quick-Start -->		
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.18.1/build/cssgrids-responsive/cssgrids-responsive-min.css">
+	    <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+
+      <script type="text/javascript" src="Scripts/jquery-1.11.2.min.js"></script>
+		<link rel="stylesheet" href="Content/home.css">
+		
+	</head>
+	
+    <body>
+    
+        
+        @if (WebSecurity.IsAuthenticated) {
+            
+                var db = Database.Open("FangjianDb");
+                
+                //get projects for this user
+                var projectId = db.Query("SELECT * FROM personalProjects WHERE UserID = @0", WebSecurity.CurrentUserId);
+                if (projectId == null) {
+                    <h1>快去开启新的项目</h1>
+                } else {
+                
+                    foreach (var row in projectId) {
+                         <div class="projectCard">
+                         <ul>
+                            <li>
+                                @row.Type
+                            </li>
+                            <li>
+                                @row.State
+                            </li>
+                            <li>
+                                @row.CreationTime
+                            </li>
+                        </ul>
+                        </div>
+                    }
+                
+                }
+
+
+        }
+        else
+        {
+        <h1>请先登录！</h1>
+        }
+
+    
+    </body>
+
+</html>
